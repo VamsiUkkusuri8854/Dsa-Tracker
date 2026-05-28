@@ -1,0 +1,8 @@
+Mastering Recursion Trees:
+1. Divide and conquer: T(N) = aT(N/b) + f(N)
+2. Height of tree: log_b(N)
+3. Number of leaves: a^(log_b(N)) = N^(log_b(a))
+4. Master Theorem cases:
+   - Case 1: f(N) = O(N^(log_b(a) - epsilon)) => T(N) = Theta(N^(log_b(a)))
+   - Case 2: f(N) = Theta(N^(log_b(a))) => T(N) = Theta(N^(log_b(a)) * log(N))
+   - Case 3: f(N) = Omega(N^(log_b(a) + epsilon)) => T(N) = Theta(f(N))
