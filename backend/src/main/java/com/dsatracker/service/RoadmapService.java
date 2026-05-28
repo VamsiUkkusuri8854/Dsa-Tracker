@@ -5,8 +5,9 @@ import com.dsatracker.model.Roadmap;
 import com.dsatracker.model.enums.Difficulty;
 import com.dsatracker.repository.ProblemRepository;
 import com.dsatracker.repository.RoadmapRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -103,7 +104,7 @@ public class RoadmapService {
     /**
      * Seed default roadmap data if the collection is empty.
      */
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void seedRoadmaps() {
         if (roadmapRepository.count() > 0) return;
 
