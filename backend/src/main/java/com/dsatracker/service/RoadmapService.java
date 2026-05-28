@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -21,6 +23,7 @@ public class RoadmapService {
 
     private final RoadmapRepository roadmapRepository;
     private final ProblemRepository problemRepository;
+    private final EntityManager entityManager;
 
     /**
      * Get all roadmaps ordered by sequence.
@@ -105,7 +108,29 @@ public class RoadmapService {
      * Seed default roadmap data if the collection is empty.
      */
     @EventListener(ApplicationReadyEvent.class)
+    @Transactional
     public void seedRoadmaps() {
+        try {
+            entityManager.createNativeQuery("CREATE TABLE IF NOT EXISTS roadmaps (" +
+                "id VARCHAR(36) PRIMARY KEY, " +
+                "topic VARCHAR(255) NOT NULL, " +
+                "description TEXT, " +
+                "total_problems INT NOT NULL, " +
+                "roadmap_order INT NOT NULL, " +
+                "created_at DATETIME" +
+                ")").executeUpdate();
+
+            entityManager.createNativeQuery("CREATE TABLE IF NOT EXISTS roadmap_problems (" +
+                "roadmap_id VARCHAR(36) NOT NULL, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "link VARCHAR(255), " +
+                "difficulty VARCHAR(50), " +
+                "platform VARCHAR(50)" +
+                ")").executeUpdate();
+        } catch (Exception e) {
+            System.err.println("Native table check failed: " + e.getMessage());
+        }
+
         if (roadmapRepository.count() > 0) return;
 
         List<Roadmap> defaults = List.of(
