@@ -51,15 +51,13 @@ public class User implements UserDetails {
     @Builder.Default
     private int longestStreak = 0;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_badges", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "badge")
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "badges", columnDefinition = "TEXT")
     @Builder.Default
     private List<String> badges = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_bookmarks", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "problem_id")
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "bookmarked_problems", columnDefinition = "TEXT")
     @Builder.Default
     private List<String> bookmarkedProblems = new ArrayList<>();
 

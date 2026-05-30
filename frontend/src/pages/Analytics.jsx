@@ -61,32 +61,38 @@ const Analytics = () => {
     { name: 'Hard', value: data.hardSolved || 0, color: '#EF4444' }
   ].filter(d => d.value > 0);
 
-  const dummyDifficultyData = [
-    { name: 'Easy', value: 3, color: '#22C55E' },
-    { name: 'Medium', value: 5, color: '#FACC15' },
-    { name: 'Hard', value: 2, color: '#EF4444' }
-  ];
+  const hasSolves = data.totalSolved > 0;
+  const pieDataToUse = hasSolves ? difficultyData : [{ name: 'No Solved Problems', value: 1, color: '#334155' }];
 
-  const pieDataToUse = difficultyData.length > 0 ? difficultyData : dummyDifficultyData;
-
-  // Format topic distribution
+  // Format topic distribution from dynamic backend map
   const topicStats = [
-    { name: 'Arrays', count: Math.max(2, Math.round(data.totalSolved * 0.3) || 0) },
-    { name: 'Strings', count: Math.max(1, Math.round(data.totalSolved * 0.2) || 0) },
-    { name: 'Trees', count: Math.max(1, Math.round(data.totalSolved * 0.15) || 0) },
-    { name: 'Graphs', count: Math.max(1, Math.round(data.totalSolved * 0.1) || 0) },
-    { name: 'DP', count: Math.max(1, Math.round(data.totalSolved * 0.15) || 0) },
-    { name: 'Greedy', count: Math.max(1, Math.round(data.totalSolved * 0.1) || 0) }
+    { name: 'Arrays', count: data.topicWiseCount?.['Arrays'] || 0 },
+    { name: 'Strings', count: data.topicWiseCount?.['Strings'] || 0 },
+    { name: 'Trees', count: data.topicWiseCount?.['Trees'] || 0 },
+    { name: 'Graphs', count: data.topicWiseCount?.['Graphs'] || 0 },
+    { name: 'DP', count: (data.topicWiseCount?.['Dynamic Programming'] || 0) + (data.topicWiseCount?.['DP'] || 0) },
+    { name: 'Other', count: Object.keys(data.topicWiseCount || {}).reduce((acc, key) => {
+        if (!['Arrays', 'Strings', 'Trees', 'Graphs', 'Dynamic Programming', 'DP'].includes(key)) {
+          return acc + (data.topicWiseCount[key] || 0);
+        }
+        return acc;
+      }, 0) }
   ];
 
-  // Platform Stats
-  const totalPlatformProblems = data.totalSolved || 38;
+  // Dynamic Platform Stats from backend map
   const platformStats = [
-    { name: 'LeetCode', count: Math.max(2, Math.round(totalPlatformProblems * 0.6) || 0), color: '#3B82F6' },
-    { name: 'GFG', count: Math.max(1, Math.round(totalPlatformProblems * 0.25) || 0), color: '#22C55E' },
-    { name: 'Codeforces', count: Math.max(0, Math.round(totalPlatformProblems * 0.1) || 0), color: '#8B5CF6' },
-    { name: 'Other', count: Math.max(0, Math.round(totalPlatformProblems * 0.05) || 0), color: '#06B6D4' }
+    { name: 'LeetCode', count: data.platformWiseCount?.['LEETCODE'] || 0, color: '#3B82F6' },
+    { name: 'GFG', count: data.platformWiseCount?.['GFG'] || 0, color: '#22C55E' },
+    { name: 'Codeforces', count: data.platformWiseCount?.['CODEFORCES'] || 0, color: '#8B5CF6' },
+    { name: 'Other', count: Object.keys(data.platformWiseCount || {}).reduce((acc, key) => {
+        if (!['LEETCODE', 'GFG', 'CODEFORCES'].includes(key)) {
+          return acc + (data.platformWiseCount[key] || 0);
+        }
+        return acc;
+      }, 0), color: '#06B6D4' }
   ];
+
+  const totalPlatformProblems = platformStats.reduce((acc, p) => acc + p.count, 0);
 
   return (
     <div className="animate-fade-in space-y-6">
@@ -120,6 +126,7 @@ const Analytics = () => {
                   ))}
                 </Pie>
                 <Tooltip 
+                  formatter={(value, name) => name === 'No Solved Problems' ? [0, 'Solved'] : [value, 'Solved']}
                   contentStyle={{ 
                     backgroundColor: 'var(--color-dark-800)', 
                     border: '2px solid var(--color-dark-700)', 

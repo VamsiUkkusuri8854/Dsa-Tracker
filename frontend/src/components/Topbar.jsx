@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { FiMenu, FiBell, FiSearch, FiSun, FiMoon, FiLogOut, FiUser } from 'react-icons/fi';
-import { useTheme } from '../context/ThemeContext';
+import { FiMenu, FiSearch, FiLogOut, FiUser } from 'react-icons/fi';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Topbar = ({ onMenuClick }) => {
-  const { theme, toggleTheme } = useTheme();
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -37,25 +35,7 @@ const Topbar = ({ onMenuClick }) => {
 
       {/* Action Controls & Profile Settings */}
       <div className="flex items-center gap-3 sm:gap-4">
-        {/* Theme Switcher button */}
-        <button 
-          onClick={toggleTheme}
-          className="p-2.5 text-[var(--color-dark-300)] hover:text-white hover:bg-[var(--color-dark-700)]/50 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-[var(--color-dark-600)]"
-          title="Toggle system theme"
-          id="theme-toggle-btn"
-        >
-          {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
-        </button>
-        
-        {/* Notifications Icon with animated glow pulse */}
-        <button 
-          className="p-2.5 text-[var(--color-dark-300)] hover:text-white hover:bg-[var(--color-dark-700)]/50 rounded-xl transition-colors relative cursor-pointer border border-transparent hover:border-[var(--color-dark-600)]"
-          title="Alert notification desk"
-          id="notifications-btn"
-        >
-          <FiBell size={18} />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-md shadow-red-500/50"></span>
-        </button>
+
 
         {/* Profile Dropdown panel */}
         <div className="relative">

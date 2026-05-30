@@ -41,9 +41,8 @@ public class Problem {
 
     private String topic;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "problem_tags", joinColumns = @JoinColumn(name = "problem_id"))
-    @Column(name = "tag")
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "tags", columnDefinition = "TEXT")
     @Builder.Default
     private List<String> tags = new ArrayList<>();
 

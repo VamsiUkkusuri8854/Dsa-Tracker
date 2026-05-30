@@ -31,8 +31,8 @@ public class Roadmap {
 
     private int totalProblems;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "roadmap_problems", joinColumns = @JoinColumn(name = "roadmap_id"))
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "roadmap_id")
     @Builder.Default
     private List<RoadmapProblem> problems = new ArrayList<>();
 
@@ -50,14 +50,19 @@ public class Roadmap {
     }
 
     /**
-     * Embedded recommended problems within a roadmap topic.
+     * Recommended problems within a roadmap topic.
      */
-    @Embeddable
+    @Entity
+    @Table(name = "roadmap_problems")
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RoadmapProblem {
+        @Id
+        @Column(length = 36)
+        private String id;
+
         private String name;
         private String link;
         
@@ -65,5 +70,12 @@ public class Roadmap {
         private Difficulty difficulty;
         
         private String platform;
+
+        @PrePersist
+        protected void onCreate() {
+            if (id == null) {
+                id = UUID.randomUUID().toString();
+            }
+        }
     }
 }

@@ -37,9 +37,8 @@ public class Note {
     @Builder.Default
     private NoteCategory category = NoteCategory.OTHER;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "note_tags", joinColumns = @JoinColumn(name = "note_id"))
-    @Column(name = "tag")
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "tags", columnDefinition = "TEXT")
     @Builder.Default
     private List<String> tags = new ArrayList<>();
 

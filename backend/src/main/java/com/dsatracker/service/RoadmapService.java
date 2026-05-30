@@ -121,6 +121,7 @@ public class RoadmapService {
                 ")").executeUpdate();
 
             entityManager.createNativeQuery("CREATE TABLE IF NOT EXISTS roadmap_problems (" +
+                "id VARCHAR(36) PRIMARY KEY, " +
                 "roadmap_id VARCHAR(36) NOT NULL, " +
                 "name VARCHAR(255) NOT NULL, " +
                 "link VARCHAR(255), " +
